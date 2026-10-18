@@ -1,0 +1,8 @@
+{
+  "chain_id": 11155111,
+  "contract_address": "0xED373f0186b0c07ec838593a680c93749b8Af03e",
+  "deployment_tx": "0x4139664c5b3393db63fbe045b06fed07fbe7b688f73efaee7f8c29fc9f2a3191",
+  "name": "Course Token",
+  "symbol": "CRS",
+  "transfer_tx": "0xc04c59e17b4dde22843fd1b26181971710d752a655289a801b24414f5f855336"
+}

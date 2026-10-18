@@ -1,0 +1,11 @@
+{
+  "name": "blockchain-lessons-token",
+  "private": true,
+  "scripts": {
+    "compile:token": "node compile_token.js"
+  },
+  "devDependencies": {
+    "@openzeppelin/contracts": "5.4.0",
+    "solc": "0.8.28"
+  }
+}
