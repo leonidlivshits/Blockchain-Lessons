@@ -1,8 +1,27 @@
+import json
 import os
+from datetime import datetime, timezone
 from getpass import getpass
+from pathlib import Path
 from urllib.parse import urlsplit
 
 from network_config import EXPECTED_CHAIN_IDS
+
+
+def load_address_1(web3):
+    path = Path(__file__).with_name("address_1.json")
+    if not path.is_file():
+        raise SystemExit(f"Не найден {path.name}")
+
+    try:
+        address = json.loads(path.read_text(encoding="utf-8"))["address"]
+        if not isinstance(address, str):
+            raise ValueError("Неверный формат адреса")
+        if not address.startswith("0x"):
+            address = "0x" + address
+        return web3.to_checksum_address(address)
+    except (OSError, KeyError, ValueError, TypeError):
+        raise SystemExit("Не удалось прочитать адрес из address_1.json") from None
 
 
 def main():
@@ -68,6 +87,21 @@ def main():
     print(f"Подключено к {network}")
     print(f"Chain ID: {actual_chain_id}")
     print(f"Последний блок: {block_number}")
+
+    address_1 = load_address_1(web3)
+    try:
+        block = web3.eth.get_block(block_number)
+        balance_wei = web3.eth.get_balance(address_1)
+    except Exception as error:
+        raise SystemExit(f"Ошибка чтения данных блокчейна ({type(error).__name__}).") from None
+
+    block_time = datetime.fromtimestamp(block["timestamp"], tz=timezone.utc)
+    print(f"Блок #{block['number']}")
+    print(f"Хеш блока: {block['hash'].hex()}")
+    print(f"Время блока (UTC): {block_time.isoformat()}")
+    print(f"Транзакций в блоке: {len(block['transactions'])}")
+    print(f"Текущий баланс address_1 в сети {network} ({address_1}): {balance_wei} Wei")
+    print(f"Баланс в ETH: {web3.from_wei(balance_wei, 'ether')}")
 
 
 if __name__ == "__main__":
